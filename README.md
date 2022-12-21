@@ -1,8 +1,8 @@
 # jsonPowerDBMicroProject
 
 This file contain the micro project on JsonPowerDB 
-## Project Manajement System:
-    This project  contain  a form which store the information like ProjectID, Project Name, Assigned To, Assignment Date, Deadline.
+## Student Endrolement System:
+    This project  contain  a form which store the information like Roll No,Name, Class, Birth-Date, Address,Enrollement-Date.
     This webpage is use to store the  information  of Project.
     Function:
       1.Save the Data.
