@@ -1,213 +1,242 @@
 <!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
 <html lang="en">
-<head>
-<title>Project Management</title>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=0">
 
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Enrollment Form</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://login2explore.com/jpdb/resources/js/0.0.4/jpdb-commons.js"></script>
+
 </head>
 
 <body>
-    
-<div class="container">
-<h2>Project Management Form using the JPDB API</h2>
+    <div class="container">
 
-<form id="empForm" method="get">
-    
-<div class="form-group">
-<label >Project ID:</label> 
-<input type="text" class="form-control"  id="projectid"
-placeholder="Enter Project ID"  onchange="getEmp()" >
-</div>
-    
-<div class="form-group">
-<label >Project Name:</label>
-<input type="text" class="form-control" id="projectname"
-placeholder="Enter Project Name" >
-</div>
-    
-<div class="form-group">
-<label for="assignedto">Assigned To</label>
-<input type="text" class="form-control" id="assignedto"
-placeholder="Enter Assigned To" >
-</div>
-    
-<div class="form-group">
-<label for="assignmentdate">Assignment Date:</label>
-<input type="date" class="form-control" id="assignmentdate"
-placeholder="Assignment Date" >
-</div>
-    
- <div class="form-group">
-<label for="deadline">Dedaline:</label>
-<input type="number" class="form-control" id="deadline"
-placeholder="Enter Dedaline">
-</div>
-    
+        <h1>Student Enrollment form</h1>
+        <br>
+        <form id="form" method="POST">
+            <div class="form-group">
+                <span><label for="rollno">Roll No</label><label id="rollnoMsg"></label></span>
+                <input type="text" class="form-control" name="rollno" id="rollno" placeholder="Enter Roll No"
+                    required>
+            </div>
+            <div class="form-group">
+                <span><label for="name">Name</label></span>
+                <input type="text" class="form-control" name="name" id="name" placeholder="Enter name" required>
+            </div>
+            <div class="form-group">
+                <span><label for="class">Class</label></span>
+                <input type="text" class="form-control" name="class" id="class" placeholder="Enter Class" required>
+            </div>
+            <div class="form-group">
+                <span><label for="BirthDate">Birth-Date</label></span>
+                <input type="date" class="form-control" name="BirthDate" id="BirthDate" placeholder="Enter Birth-Date"
+                    required>
+            </div>
 
-   <div class="from-group text-center">
-<button type="button" class="btn btn-lg btn-primary" id="Save"  onclick="saveData()" disabled>Save</button>
-<button type="button" class="btn btn-lg btn-primary" id="change" onclick="changeData()" disabled>Change</button>
-<button type="button" class="btn btn-lg btn-primary" id="reset" onclick="resetForm()" disabled>Reset</button>
+            <div class="form-group">
+                <span><label for="address">Address</label></span>
+                <input type="text" class="form-control" name="address" id="address" placeholder="Enter address"
+                    required>
+            </div>
+            <div class="form-group">
+                <span><label for="EnrollmentDate">Enrollment-Date</label></span>
+                <input type="date" class="form-control" name="EnrollmentDate" id="EnrollmentDate"
+                    placeholder="Enter Enrollment-Date" required>
+            </div>
+            <br>
+            <input type="button" class="btn btn-primary" id="savebutton" value="Save" onclick=RegisterStudent()>
+            <input type="button" class="btn btn-primary" id="update" value="Update" onclick=UpdateStudent()>
+            <input type="button" class="btn btn-primary" id="reset" value="Reset" onclick=resetForm()>
+
+        </form>
     </div>
-</form>
-</div>
-    <script type="text/javascript" src="https://login2explore.com/jpdb/resources/js/0.0.3/jpdb-commons.js" > </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://login2explore.com/jpdb/resources/js/0.0.4/jpdb-commons.js"></script>
     <script >
         
-            var jpdbBaseURL="http://api.login2explore.com:5577";
-    var jpdbIRL="/api/irl";
-    var jpdbIML="/api/iml";
-    var empDBName="Project";
-    var empRelationName="PRO-REL";
-    var connToken="90937856|-31949272064483778|90952079";
-$("#projectid").focus();
+        var token = "90937856|-31949272064483778|90952079";
+        var dbName = "Student";
+        var relName = "Student-Rel"
+        resetForm()
+        function validateAndGetFornData() {
+            var rollnoVar = $("#rollno").val();
 
-function saveRecNo2LS(jsonObj){
-    var lvData=jSON.parse(jsonObj.data);
-    localStorage.setItem("recno",lvData.rec_no);
-}
+            if (rollnoVar === "") {
+                alert("Roll No is required");
+                $("#rollno").focus();
+                return "";
+            }
 
-function getEmpIdAsJsonObj(){
-    var projectid=$("#projectid").val();
-    var jsonStr={
-        id:projectid
-    };
-    return JSON.stringify(jsonStr);
-}
+            var nameVar = $("#name").val();
+            if (nameVar === "") {
+                alert("Student Name is required");
+                $("#name").focus();
+                return "";
+            }
 
-function fillData(jsonObj){
-    saveRecNo2LS(jsonObj);
-    var data=JSON.parse(jsonObj.data).record;
-    $("#projectname").val(data.projectname);
-    $("#assignedto").val(data.assignedto);
-    $("#assignmentdate").val(data.assignmentdate);
-    $("#dedaline").val(data.deadline);
-      
-}
+            var classn = $("#class").val();
+            if (classn === "") {
+                alert("Class is required");
+                $("#class").focus();
+                return "";
+            }
 
-function resetForm() {  
-    $("#projectid").val("");
-    $("#projectname").val("");
-    $("#assignedto").val("");
-    $("#assignmentdate").val("");  
-    $("#deadline").val("");
-      
-    $("#projectid").prop("disabled",false); 
-    $("#save").prop("disabled",true);   
-    $("#change").prop("disabled",true);
-    $("#reset").prop("disabled",true);
+            var address = $("#address").val();
+            if (address === "") {
+                alert("address is required");
+                $("#address").focus();
+                return "";
+            }
 
-    $("#projectid").focus();
-}
+            var BirthDate = $("#BirthDate").val();
+            if (BirthDate === "") {
+                alert("Birth-Date is required");
+                $("#BirthDate").focus();
+                return "";
+            }
 
+            var EnrollmentDate = $("#EnrollmentDate").val();
+            if (EnrollmentDate === "") {
+                alert("Enrollment-Date is required");
+                $("#EnrollmentDate").focus();
+                return "";
+            }
+            var jsonStrObj = {
+                rollno: rollnoVar,
+                name: nameVar,
+                class: classn,
+                address: address,
+                BirthDate: BirthDate,
+                EnrollmentDate: EnrollmentDate
+            }
 
-function validateData() {
-    var projectid,projectname,assignedto,assignmentdate, deadline;
-    projectid = $("#projectid").val();
-    projectname = $("#projectname").val();
-    assignedto = $("#assignto").val();
-    assignmentdate= $("#assgnmetdate").val();
-    deadline = $("#dealine").val();
+            return JSON.stringify(jsonStrObj);
+        }
+        function UpdateStudent() {
+            var jsonStr = validateAndGetFornData();
+            if (jsonStr === "") {
+                return;
+            }
+            var putReqStr = createUPDATERecordRequest(token, jsonStr, dbName, relName, localStorage.getItem("rec_no"));
+            jQuery.ajaxSetup({ async: false });
+            var resultObj = executeCommandAtGivenBaseUrl(putReqStr, "http://api.login2explore.com:5577", "/api/iml");
+            if (resultObj.status == 200) {
+                alert("Data updated Successfully")
+            }
+            else if (resultObj.status == 401) {
+                alert("Invalid Token")
+            }
+            else if (resultObj.status == 400) {
+                alert("Something went wrong,Try after some time")
+            }
+            jQuery.ajaxSetup({ async: true });
+            resetForm();
+        }
 
-    if (projectid === "") {
-    
-        alert("projectID Required Value");
-        $("#projectid").focus();
-        return "";
-    }
+        function savetoloavelstorage(resultObj) {
+            var data = JSON.parse(resultObj.data)
+            localStorage.setItem('rec_no', data.rec_no)
+        }
+        function resetForm() {
+            $("#rollno").val("");
+            $("#name").val("").prop("disabled", true);
+            $("#class").val("").prop("disabled", true);
+            $("#address").val("").prop("disabled", true);
+            $("#BirthDate").val("").prop("disabled", true);
+            $("#EnrollmentDate").val("").prop("disabled", true);
+            $("#rollno").prop("disabled", false)
+            $("#savebutton").prop("disabled", true)
+            $("#update").prop("disabled", true)
+            $("#reset").prop("disabled", true)
+        }
+        function enableInput() {
+            $("#name").prop("disabled", false);
+            $("#class").prop("disabled", false);
+            $("#address").prop("disabled", false);
+            $("#BirthDate").prop("disabled", false);
+            $("#EnrollmentDate").prop("disabled", false);
+            $("#reset").prop("disabled", false)
 
-    if (projectname=== "") {
-        alert("Project Name is Required Value");
-        $("#projectname").focus();
-        return "";
-    }
-    
-    if (assignedto === "") {
-        alert("Assigned TO is Required Value");
-        $("#assignedto").focus();
-        return "";
-    }
-    if (assignmentdate === "") {
-        alert("AssignmentDateis Required Value");
-        $("#assignmentdate").focus();
-        return "";
-    }
-    if (dedaline === "") {
-        alert("Dedaline is Required Value");
-        $("#dedaline").focus();
-        return "";
-    }
-   
-    var jsonStrObj = {
-        id: projectid,
-        projectname: projectname,
-        assignedto:assignedto,
-        assignementdate: assignmentdate,
-        dedaline: dedaline
-       
-    };
-    return JSON.stringify(jsonStrObj);
-}
+        }
+        document.getElementById("rollno").addEventListener("focusout", function (event) {
+            var result=checkrecord()
+        })
+        function checkrecord() {
+            var rollnoVar = $("#rollno").val();
+            if (rollnoVar === "") {
+                alert("Student Roll no is required");
+                $("#name").focus();
+                return "";
+            }
 
+            var jsonObj = {
+                rollno: rollnoVar
+            }
+            var jsonStr = JSON.stringify(jsonObj);
+            if (jsonStr === "") {
+                return;
+            }
+            var getReqStr = createGET_BY_KEYRequest("90937884|-31949272429615463|90952116", "Student", "Student-Rel", jsonStr, true, true);
+            jQuery.ajaxSetup({ async: false });
+            var resultObj = executeCommandAtGivenBaseUrl(getReqStr, "http://api.login2explore.com:5577", "/api/irl");
+            if (resultObj.status !=200) {
+                $("#savebutton").prop("disabled", false)
+                enableInput()
+            }
+            else{
+                $("#savebutton").prop("disabled", true)
+                fillData(resultObj)
+                return true;
+            }
+        }
+        function fillData(resultObj) {
+            var data = JSON.parse(resultObj.data);
+            var data1 = JSON.stringify(data.record)
+            var data2 = JSON.parse(data1)
+            $("#rollno").val(data2.rollno);
+            $("#name").val(data2.name);
 
-function getEmp(){
-    var empIdJsonObj = getEmpIdAsJsonObj(); 
-    var getRequest=createGET_BY_KEYRequest(connToken,empDBName,empRelationName,empIdJsonObj);
-    jQuery.ajaxSetup({async:false});
-    var resJsonObj=executeCommandAtGivenBaseUrl(getRequest, jpdbBaseURL, jpdbIRL);
-    jQuery.ajaxSetup({async:true});
-    if(resJsonObj.status === 400){
-        $("#save").prop("disabled",false);
-        $("#reset").prop("disabled",false);
-        $("#projectName").focus();
-        
-    }else if (resJsonObj.status === 200){
-        
-        $("#projectid").prop("disabled",true);
-        fillData(resJsonObj);
-        
-        $("change").prop("disabled", false);
-        $("reset").prop("disabled", false);
-        $("#projectname").focus();
-        
-    }  
-}
+            $("#class").val(data2.class);
+            $("#address").val(data2.address);
+            $("#BirthDate").val(data2.BirthDate);
+            $("#EnrollmentDate").val(data2.EnrollmentDate);
+            jQuery.ajaxSetup({ async: true });
+            savetoloavelstorage(resultObj)
+            $("#rollno").prop("disabled", true)
+            $("#savebutton").prop("disabled", true)
+            $("#rollno").prop("disabled", true)
+            $("#update").prop("disabled", false)
 
-
-function saveData() {
-    var jsonStrObj = validateData();
-    if (jsonStrObj === "") {
-        return "";
-    }
-    var putRequest = createPUTRequest(connToken, jsonStrObj, empDBName, empRelationName);
-    jQuery.ajaxSetup({async: false});
-    var resJsonObj = executeCommandAtGivenBaseUrl(putRequest,jpdbBaseURL,jpdbIML);
-  
-    jQuery.ajaxSetup({async: true});
-    resetForm();
-    $("#projectid").focus();
-}
-
-function changeData(){
-    $("#change").prop("disabled",true);
-    jsonchg=validateData();
-    var updateRequest = createUPDATERecordRequest(connToken,jsonChg,empDBName,empRelationName, localStorage.getItem("recno"));
-    jQuery.ajaxSetup({async:false});
-    var resJsonObj=executeCommandAtGivenBaseUrl(updateRequest,jpdbBaseURL,jpdbIML);
-    jQurery.ajaxSetup({async:true});
-    console.log(resJsonObj);
-    resetForm();
-    $("#empid").focus();
-}
-</script>
+            enableInput()
+        }
+        function RegisterStudent() {
+            var jsonStr = validateAndGetFornData();
+            if (jsonStr === "") {
+                return;
+            }
+            var putReqStr = createPUTRequest(token, jsonStr, dbName, relName);
+            // var putReqStr=createUPDATERecordRequest(, jsonStr, "Student", "Student-Rel",localStorage.getItem("rec_no"));
+            jQuery.ajaxSetup({ async: false });
+            var resultObj = executeCommandAtGivenBaseUrl(putReqStr, "http://api.login2explore.com:5577", "/api/iml");
+            if (resultObj.status == 200) {
+                alert("Data added Successfully")
+            }
+            else if (resultObj.status == 401) {
+                alert("Invalid Token")
+            }
+            else if (resultObj.status == 400) {
+                alert("Something went wrong,Try after some time")
+            }
+            jQuery.ajaxSetup({ async: true });
+            resetForm();
+        }
+    </script>
 </body>
+
 </html>
